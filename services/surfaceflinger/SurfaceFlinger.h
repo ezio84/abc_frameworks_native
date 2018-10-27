@@ -823,6 +823,7 @@ private:
     int mDebugRegion;
     int mDebugDDMS;
     int mDebugDisableHWC;
+    bool mForceClientComposition;
     int mDebugDisableTransformHint;
     volatile nsecs_t mDebugInSwapBuffers;
     nsecs_t mLastSwapBufferTime;

@@ -350,6 +350,11 @@ SurfaceFlinger::SurfaceFlinger() : SurfaceFlinger(SkipInitialization) {
         // for production purposes later on.
         setenv("TREBLE_TESTING_OVERRIDE", "true", true);
     }
+
+     property_get("ro.hardware", value, "");
+     if (!strcmp(value, "kirin970")) {
+        mForceClientComposition = true;
+    }
 }
 
 void SurfaceFlinger::onFirstRef()
@@ -2008,7 +2013,7 @@ void SurfaceFlinger::setUpHWComposer() {
                     }
 
                     layer->setGeometry(displayDevice, i);
-                    if (mDebugDisableHWC || mDebugRegion) {
+                    if (mForceClientComposition || mDebugDisableHWC || mDebugRegion) {
                         layer->forceClientComposition(hwcId);
                     }
                 }
@@ -4318,7 +4323,7 @@ void SurfaceFlinger::dumpAllLocked(const Vector<String16>& args, size_t& index,
     colorizer.bold(result);
     result.append("h/w composer state:\n");
     colorizer.reset(result);
-    bool hwcDisabled = mDebugDisableHWC || mDebugRegion;
+    bool hwcDisabled = mForceClientComposition || mDebugDisableHWC || mDebugRegion;
     result.appendFormat("  h/w composer %s\n",
             hwcDisabled ? "disabled" : "enabled");
     hwc.dump(result);
